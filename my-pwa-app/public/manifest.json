@@ -2,7 +2,7 @@
   "name": "SoftLink PWA Demo",
   "short_name": "SoftPWA",
   "id": "/",
-  "description": "Offline-first post sharing app",
+  "description": "Offline-first contact app",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -7,7 +7,7 @@ export const listenContacts = (callback) => {
   return onSnapshot(contactsRef, (snapshot) => {
     const contacts = [];
     snapshot.forEach(doc => {
-      contacts.push({ id: doc.id, ...doc.data() });
+      contacts.push({ ...doc.data(), id: doc.id, });
     });
     callback(contacts);
   });
@@ -20,16 +20,26 @@ export const addContact = (contact) => {
 // contacts.js - Firebase delete funksiyası
 export const deleteContact = async (id) => {
   try {
-    // id-nin doğru tipdə olduğunu yoxlayaq
-    if (typeof id !== 'string' && typeof id !== 'number') {
-      throw new Error("Invalid ID format");
+    // id-nin null, undefined və ya boş olmadığını yoxlayaq
+    if (id === null || id === undefined || id === '') {
+      throw new Error("Contact ID is required");
     }
 
-    const contactDoc = doc(db, "contacts", id);
+    // id-ni string-ə çevirək (Firestore həmişə string ID gözləyir)
+    const contactId = String(id).trim();
+
+    // Boş string-dən sonra yenidən yoxlayaq
+    if (!contactId) {
+      throw new Error("Contact ID cannot be empty");
+    }
+
+    // Firestore doc reference yaradaq
+    const contactDoc = doc(db, "contacts", contactId);
     await deleteDoc(contactDoc);
-    console.log("✅ Contact deleted from Firebase");
+    console.log("✅ Contact deleted from Firebase:", contactId);
   } catch (error) {
     console.error("Error deleting contact from Firebase:", error);
+    // Xətanı yenidən throw edək ki, App.jsx-də handle edilsin
+    throw error;
   }
 };
-

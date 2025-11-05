@@ -30,7 +30,26 @@ export const clearPendingContacts = async () => {
 
 // idb.js - IndexedDB delete funksiyası
 export const deleteContactFromIndexedDB = async (id) => {
-  const db = await initDB();
-  await db.delete("pending-contacts", id);
-  console.log("✅ Contact deleted from IndexedDB");
+  try {
+    // ID-nin mövcud olduğunu yoxlayaq
+    if (id === null || id === undefined || id === '') {
+      throw new Error("Contact ID is required for deletion");
+    }
+
+    const db = await initDB();
+    
+    // ID-ni string-ə çevirək (IndexedDB həm string, həm də number qəbul edir)
+    // Lakin bizim halda Firebase ID-ləri string-dir
+    const contactId = typeof id === 'number' ? id : String(id).trim();
+    
+    if (!contactId) {
+      throw new Error("Contact ID cannot be empty");
+    }
+
+    await db.delete("pending-contacts", contactId);
+    console.log("✅ Contact deleted from IndexedDB:", contactId);
+  } catch (error) {
+    console.error("Error deleting contact from IndexedDB:", error);
+    throw error;
+  }
 };
