@@ -1,4 +1,3 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 // lazımdırsa Firestore, Auth və s. burada import edirsən
 import { initializeFirestore, persistentLocalCache } from "firebase/firestore";
